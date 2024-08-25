@@ -5,6 +5,8 @@
 #include "expressions.hpp"
 #include "core.hpp"
 
+#define root independency::path()
+
 class cli_parser
 { public:
   cli_parser(int argc, char** argv)
@@ -75,5 +77,24 @@ int main(int argc, char** argv)
   { std::printf("Available targets are:\n");
     for (std::string tgt : c.targets()) { std::printf("%s\n", tgt.c_str()); }
     return 0; }
+
+  // The actual build process starts here
+  std::string cksums_file = "."; cksums_file.append(cp.filename).append(".cks");
+  independency::file cksums(cksums_file);
+
+  independency::storage prev, now;
+  
+  prev.parse(cksums.read());
+  
+  for (std::string s : c.sources())
+  { now[root / s] = c.ckstr(independency::file(s).read()); }
+  if (!cksums.write(now.serialize()))
+  { std::printf("Can't write cksum file\n"); }
+
+  std::list<std::string> changed;
+
+  for (std::string s : now.ls(root))
+  { if (!prev.chk(root / s)) { changed.push_back(s); continue; }
+    if (prev[root / s] != now[root / s]) { changed.push_back(s); continue; } }
 
   return 0; }

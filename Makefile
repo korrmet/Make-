@@ -1,3 +1,5 @@
+# Standard GNU Make script
+
 all: make++
 
 parser.o: parser.cpp parser.hpp

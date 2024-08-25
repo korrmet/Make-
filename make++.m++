@@ -1,6 +1,6 @@
 # Make++, simple generic file processing tool
 
-| *main.cpp                           | >compile | main.o        | >link | make++ |
+|                  | *main.cpp        | >compile | main.o        | >link | make++ |
 | *parser.hpp      | *parser.cpp      | >compile | parser.o      |       |        |
 | *expressions.hpp | *expressions.cpp | >compile | expressions.o |       |        |
 | *core.hpp        | *core.cpp        | >compile | core.o        |       |        |

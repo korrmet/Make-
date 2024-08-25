@@ -10,6 +10,8 @@ class core
   core(std::vector<std::vector<std::string>> table);
   std::list<std::string> targets();
   std::list<std::string> files();
+  std::list<std::string> sources();
+  std::string ckstr(std::string text);
 
   private:
   std::vector<std::vector<std::string>> table;
