@@ -1,10 +1,30 @@
 # Make++, simple generic file processing tool
 
-|                  | *main.cpp        | >compile | main.o        | >link | make++ |
-| *parser.hpp      | *parser.cpp      | >compile | parser.o      |       |        |
-| *expressions.hpp | *expressions.cpp | >compile | expressions.o |       |        |
-| *core.hpp        | *core.cpp        | >compile | core.o        |       |        |
+|                |*main.cpp       |>compile|main.o       |>link|make++|
+|*parser.hpp     |*parser.cpp     |>compile|parser.o     |     |      |
+|*expressions.hpp|*expressions.cpp|>compile|expressions.o|     |      |
+|*core.hpp       |*core.cpp       |>compile|core.o       |     |      |
 
 cxx     : g++
 link    : $cxx$ $left$ -o $right$
 compile : $cxx$ -c $left$ -o $right$
+
+# Another example
+# |*file1.hpp |>prepare|*file1.cpp|>prepare|>compile|file1.o|>link|program.elf|>run   |
+# |*common.hpp|>prepare|          |        |        |       |     |           |>pack  |
+# |-----------|--------|----------|--------|--------|-------|     |           |>deploy|
+# |*file2.hpp |>prepare|*file2.cpp|>prepare|>compile|file2.o|     |           |       |
+# |*common.hpp|>prepare|          |        |        |       |     |           |       |
+# |-----------|--------|----------|--------|--------|-------|     |           |       |
+# |*file3.hpp |>prepare|*file3.cpp|>prepare|>compile|file3.o|     |           |       |
+# |*common.hpp|>prepare|          |        |        |       |     |           |       |
+
+# The jobs list consists of the commands should be executed in a right 
+# sequence. As income we have the table itself and the target. Target may
+# appear several times at the table and all of the instances should be 
+# handled. The core of the algorithm is to run throug the chain of the commands
+# from the left side of the selected targets that starts with the changed
+# source file.
+
+# The build system tries to handle every column from the left side of the
+# table row by row.
