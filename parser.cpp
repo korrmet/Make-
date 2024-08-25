@@ -8,8 +8,8 @@ static std::string del_trailing_spaces(std::string str)
 static std::string normalize_field(std::string str)
 { str = del_trailing_spaces(str);
   bool dash_only = true;
-  for (char c : str) { if (c != '-') { dash_only = false; return ""; } }
-  return str; }
+  for (char c : str) { if (c != '-') { dash_only = false; } }
+  return dash_only ? "" : str; }
 
 parser::parser(std::string script)
 { if (!script.size()) { return; }

@@ -1,5 +1,9 @@
 #include <cstdio>
 #include <string>
+#include "Independency/independency.hpp"
+#include "parser.hpp"
+#include "expressions.hpp"
+#include "core.hpp"
 
 class cli_parser
 { public:
@@ -38,13 +42,38 @@ int main(int argc, char** argv)
   if (cp.filename.empty())
   { std::printf("Specify build script, use \"-h\" or \"--help\" for help.\n");
     return -1; }
+
+  independency::file file(cp.filename);
+  if (!file)
+  { std::printf("Can't open \"%s\"\n", cp.filename.c_str());
+    return -1; }
+
+  parser p(file.read()); core c(p.table);
   
   if (cp.command.empty())
   { std::printf("Specify what to do, use \"-h\" or \"--help\" for help.\n");
     return -1; }
 
-  if (cp.clean) { std::printf("Cleaning the project...\n"); return 0; }
-  if (cp.list) { std::printf("Available targets are:\n"); return 0; }
-  if (cp.reset) { std::printf("Reset the project...\n"); return 0; }
+  if (cp.clean)
+  { std::printf("Cleaning the project...\n");
+    for (std::string f : c.files())
+    { independency::file candidate(f); if (!candidate) { continue; }
+      std::printf("- %s\n", f.c_str()); candidate.del(); }
+    return 0; }
+
+  if (cp.reset)
+  { std::printf("Reset the project...\n");
+    for (std::string f : c.files())
+    { independency::file candidate(f); if (!candidate) { continue; }
+      std::printf("- %s\n", f.c_str()); candidate.del(); }
+    std::string cksums = "."; cksums.append(cp.filename).append(".cks");
+    if (!!independency::file(cksums)) 
+    { std::printf("- %s\n", cksums.c_str()); independency::file(cksums).del(); }
+    return 0; }
+
+  if (cp.list)
+  { std::printf("Available targets are:\n");
+    for (std::string tgt : c.targets()) { std::printf("%s\n", tgt.c_str()); }
+    return 0; }
 
   return 0; }
