@@ -1,0 +1,9 @@
+# Make++, simple generic file processing tool
+
+| *main.cpp                           | >compile | main.o        | >link | make++ |
+| *parser.hpp      | *parser.cpp      | >compile | parser.o      |       |        |
+| *expressions.hpp | *expressions.cpp | >compile | expressions.o |       |        |
+
+cxx     : g++
+link    : $cxx$ $left$ -o $right$
+compile : $cxx$ -c $left$ -o $right$
